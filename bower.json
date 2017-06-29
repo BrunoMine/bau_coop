@@ -1,0 +1,14 @@
+{
+    "name": "bau_coop",
+    "description": "Bau cooperativo para Minetest",
+    "keywords": [
+        "bau_coop"
+    ],
+    "homepage": "https://github.com/BrunoMine/bau_coop",
+    "screenshots": [
+        "https://raw.githubusercontent.com/BrunoMine/bau_coop/master/screenshot.png"
+    ],
+    "authors": [
+        "BrunoMine"
+    ]
+}
