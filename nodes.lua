@@ -349,6 +349,7 @@ do
 	end
 	-- Mantem a tabela groups separada
 	def.groups = minetest.deserialize(minetest.serialize(def.groups))
+	def.groups.not_in_creative_inventory = 1
 	def.drop = "bau_coop:bau_compartilhado"
 	
 	-- Altera alguns paremetros
