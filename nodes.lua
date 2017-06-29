@@ -411,7 +411,7 @@ end
 minetest.register_craft({
 	output = 'bau_coop:bau_compartilhado',
 	recipe = {
-		{'default:chest_locked', 'default:steel_ingot'},
-		{'default:steel_ingot', 'default:glass'}
+		{'default:chest_locked', 'default:copper_ingot'},
+		{'default:tin_ingot', 'default:glass'}
 	}
 })
