@@ -15,16 +15,7 @@ local acessos = {}
 
 -- Remover nome dos acessos ao sair
 minetest.register_on_leaveplayer(function(player)
-	if not player then return end
-	local name = player:get_player_name()
-	
-	local tb = {}
-	for n,_ in pairs(acessos) do
-		if n ~= name then
-			tb[n] = acessos[n]
-		end 
-	end
-	acessos = tb
+	acessos[player:get_player_name()] = nil
 end)
 
 -- Formspec de acesso negado
@@ -55,7 +46,7 @@ end
 
 local function pegar_formspec_painel_acesso(name, meta, msg, erro)
 	local lista = ""
-	local donos = meta:get_string("donos")
+	local donos = meta:get_string("permitidos")
 	if donos and donos ~= "" then
 		donos = minetest.deserialize(donos)
 		for _,n in ipairs(donos) do
@@ -97,11 +88,11 @@ local function verificar_acesso(meta, player)
 		name = player:get_player_name()
 	end
 	
-	if meta:get_string("donos") == "" then
+	if meta:get_string("permitidos") == "" then
 		return true
 	end
 	
-	for _,n in ipairs(minetest.deserialize(meta:get_string("donos"))) do
+	for _,n in ipairs(minetest.deserialize(meta:get_string("permitidos"))) do
 		if name == n then
 			return true
 		end
@@ -112,8 +103,14 @@ end
 -- Receptor de botoes
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if formname == "bau_coop:bau_compartilhado" then
+		if not acessos[player:get_player_name()] then return end
 		local pos = acessos[player:get_player_name()]
 		local meta = minetest.get_meta(pos)
+		
+		-- Verificar se eh o dono
+		if meta:get_string("dono") ~= player:get_player_name() then
+			return
+		end
 		
 		if verificar_acesso(meta, player) == false then
 			return minetest.show_formspec(
@@ -134,7 +131,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		
 		-- Adicionar acesso de um jogador
 		elseif fields.adicionar then
-			local donos = minetest.deserialize(meta:get_string("donos"))
+			local donos = minetest.deserialize(meta:get_string("permitidos"))
 			
 			-- Verificar se um nome foi especificado
 			if fields.novo_acesso == "" then
@@ -154,9 +151,20 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				)
 			end
 			
+			-- Verificar se ja esta online
+			for _,n in ipairs(donos) do
+				if n == fields.nome_acesso then
+					return minetest.show_formspec(
+						player:get_player_name(),
+						"bau_coop:bau_compartilhado",
+						pegar_formspec_painel_acesso(player:get_player_name(), meta, "Esse jogador ja registrado", true)
+					)
+				end
+			end
+			
 			-- Adiciona o acesso ao jogador
 			table.insert(donos, fields.novo_acesso)
-			meta:set_string("donos", minetest.serialize(donos))
+			meta:set_string("permitidos", minetest.serialize(donos))
 			
 			minetest.sound_play("bau_coop_blip", {gain = 0.3,
 					pos = pos, max_hear_distance = 10})
@@ -169,7 +177,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			
 		-- Remover acesso de um jogador
 		elseif fields.remover then
-			local donos = minetest.deserialize(meta:get_string("donos"))
+			local donos = minetest.deserialize(meta:get_string("permitidos"))
+			
+			-- Verifica se eh o proprio dono se removendo
+			if fields.nome_acesso == meta:get_string("dono") then
+				return minetest.show_formspec(
+					player:get_player_name(),
+					"bau_coop:bau_compartilhado",
+					pegar_formspec_painel_acesso(player:get_player_name(), meta, "Nao pode remover a si mesmo", true)
+				)
+			end
 			
 			-- Verificar se o jogador selecionado eh ultimo dono
 			if table.maxn(donos) == 1 then
@@ -188,7 +205,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				end
 			end
 			donos = tb
-			meta:set_string("donos", minetest.serialize(donos))
+			meta:set_string("permitidos", minetest.serialize(donos))
 			
 			-- Verifica se o jogador ainda tem acesso
 			if verificar_acesso(meta, player) == false then
@@ -223,7 +240,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			local name = player:get_player_name()
 			local node = minetest.get_node(pos)
 			
-			-- Verifica se tem mais alguem acessando
+			-- Verifica se tem mais alguem acessando 
 			for k, v in pairs(acessos) do
 				if k ~= name and pos.x == pos.x and pos.y == pos.y and pos.z == pos.z then
 					acessos[name] = nil -- Remover nome dos acessos
@@ -257,12 +274,12 @@ minetest.register_node("bau_coop:bau_compartilhado", {
 	
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
-		meta:set_string("donos", minetest.serialize({placer:get_player_name()}) or "")
-		meta:set_string("infotext", "Bau Compartilhado")
+		meta:set_string("dono", placer:get_player_name())
+		meta:set_string("permitidos", minetest.serialize({placer:get_player_name()}))
+		meta:set_string("infotext", "Bau Compartilhado ("..placer:get_player_name()..")")
 	end,
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
-		meta:set_string("donos", "")
 		local inv = meta:get_inventory()
 		inv:set_size("main", 8 * 4)
 	end,
