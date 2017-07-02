@@ -100,7 +100,6 @@ local function verificar_acesso(meta, player)
 	return false
 end
 
-
 -- Fechar bau
 local fechar = function(name)
 	local pos = acessos[name]
@@ -113,7 +112,7 @@ local fechar = function(name)
 			return
 		end
 	end
-	minetest.after(0.2, minetest.swap_node, pos, { name = "bau_coop:bau_compartilhado",
+	minetest.after(0.2, minetest.swap_node, minetest.deserialize(minetest.serialize(pos)), { name = "bau_coop:bau_compartilhado",
 			param2 = node.param2 })
 	minetest.sound_play("bau_coop_close", {gain = 0.3, pos = pos, max_hear_distance = 10})
 	acessos[name] = nil -- Remover nome dos acessos
@@ -350,11 +349,11 @@ minetest.register_node("bau_coop:bau_compartilhado", {
 			if minetest.get_node(pos).name == "bau_coop:bau_compartilhado" then
 				minetest.sound_play("bau_coop_open", {gain = 0.3,
 					pos = pos, max_hear_distance = 10})
-				minetest.after(0.1 , minetest.swap_node, pos,
+				minetest.after(0.1 , minetest.swap_node, minetest.deserialize(minetest.serialize(pos)),
 							{ name = "bau_coop:bau_compartilhado_aceso",
 							param2 = node.param2 })
 				if minetest.get_node({x=pos.x, y=pos.y+1, z=pos.z}).name == "air" then
-					minetest.after(0.5 , minetest.swap_node, pos,
+					minetest.after(0.5 , minetest.swap_node, minetest.deserialize(minetest.serialize(pos)),
 							{ name = "bau_coop:bau_compartilhado_open",
 							param2 = node.param2 })
 				end
