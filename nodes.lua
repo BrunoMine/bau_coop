@@ -100,8 +100,36 @@ local function verificar_acesso(meta, player)
 	return false
 end
 
+
+-- Fechar bau
+local fechar = function(name)
+	local pos = acessos[name]
+	local node = minetest.get_node(pos)
+			
+	-- Verifica se tem mais alguem acessando 
+	for k, v in pairs(acessos) do
+		if k ~= name and pos.x == pos.x and pos.y == pos.y and pos.z == pos.z then
+			acessos[name] = nil -- Remover nome dos acessos
+			return
+		end
+	end
+	minetest.after(0.2, minetest.swap_node, pos, { name = "bau_coop:bau_compartilhado",
+			param2 = node.param2 })
+	minetest.sound_play("bau_coop_close", {gain = 0.3, pos = pos, max_hear_distance = 10})
+	acessos[name] = nil -- Remover nome dos acessos
+end
+
+
 -- Receptor de botoes
 minetest.register_on_player_receive_fields(function(player, formname, fields)
+	
+	-- Ao sair
+	if formname == "bau_coop:bau_compartilhado" and fields.quit then
+		local name = player:get_player_name()
+		fechar(name)
+	end
+	
+	-- Dono
 	if formname == "bau_coop:bau_compartilhado" then
 		if not acessos[player:get_player_name()] then return end
 		local pos = acessos[player:get_player_name()]
@@ -151,13 +179,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				)
 			end
 			
-			-- Verificar se ja esta online
+			-- Verificar se ja esta registrado
 			for _,n in ipairs(donos) do
-				if n == fields.nome_acesso then
+				if n == fields.novo_acesso then
 					return minetest.show_formspec(
 						player:get_player_name(),
 						"bau_coop:bau_compartilhado",
-						pegar_formspec_painel_acesso(player:get_player_name(), meta, "Esse jogador ja registrado", true)
+						pegar_formspec_painel_acesso(player:get_player_name(), meta, "Jogador ja registrado", true)
 					)
 				end
 			end
@@ -235,25 +263,10 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				)
 			end
 		
-		-- Sair
-		elseif fields.quit then
-			local name = player:get_player_name()
-			local node = minetest.get_node(pos)
-			
-			-- Verifica se tem mais alguem acessando 
-			for k, v in pairs(acessos) do
-				if k ~= name and pos.x == pos.x and pos.y == pos.y and pos.z == pos.z then
-					acessos[name] = nil -- Remover nome dos acessos
-					return
-				end
-			end
-			minetest.after(0.2, minetest.swap_node, pos, { name = "bau_coop:bau_compartilhado",
-					param2 = node.param2 })
-			minetest.sound_play("bau_coop_close", {gain = 0.3, pos = pos, max_hear_distance = 10})
-			acessos[name] = nil -- Remover nome dos acessos
 		end
 		
 	end
+	
 end)
 
 minetest.register_node("bau_coop:bau_compartilhado", {
@@ -288,6 +301,8 @@ minetest.register_node("bau_coop:bau_compartilhado", {
 		local inv = meta:get_inventory()
 		return ( inv:is_empty("main") and verificar_acesso(meta, player) ) or minetest.check_player_privs(player, "protection_bypass")
 	end,
+	
+	
 	allow_metadata_inventory_move = function(pos, from_list, from_index,
 			to_list, to_index, count, player)
 		local meta = minetest.get_meta(pos)
