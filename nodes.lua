@@ -103,8 +103,9 @@ end
 -- Fechar bau
 local fechar = function(name)
 	local pos = acessos[name]
+	if not pos then return end
 	local node = minetest.get_node(pos)
-			
+	
 	-- Verifica se tem mais alguem acessando 
 	for k, v in pairs(acessos) do
 		if k ~= name and pos.x == pos.x and pos.y == pos.y and pos.z == pos.z then
