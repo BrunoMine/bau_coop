@@ -446,7 +446,6 @@ minetest.register_lbm({
 	nodenames = {"bau_coop:bau_compartilhado_open"},
 	run_at_every_load = true,
 	action = function(pos, node)
-		minetest.chat_send_all("fechando")
 		minetest.swap_node(pos, { name = "bau_coop:bau_compartilhado",
 				param2 = node.param2 })
 	end,
