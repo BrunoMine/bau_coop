@@ -196,7 +196,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			table.insert(donos, fields.novo_acesso)
 			meta:set_string("permitidos", minetest.serialize(donos))
 			
-			minetest.sound_play("bau_coop_blip", {gain = 0.3,
+			minetest.sound_play("bau_coop_blip", {gain = 0.2,
 					pos = pos, max_hear_distance = 10})
 			
 			return minetest.show_formspec(
@@ -246,7 +246,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				)
 			end
 			
-			minetest.sound_play("bau_coop_blip", {gain = 0.3,
+			minetest.sound_play("bau_coop_blip", {gain = 0.2,
 					pos = pos, max_hear_distance = 10})
 			
 			return minetest.show_formspec(
@@ -350,7 +350,7 @@ minetest.register_node("bau_coop:bau_compartilhado", {
 		if verificar_acesso(meta, clicker) then
 			
 			if minetest.get_node(pos).name == "bau_coop:bau_compartilhado" then
-				minetest.sound_play("bau_coop_open", {gain = 0.3,
+				minetest.sound_play("bau_coop_open", {gain = 0.2,
 					pos = pos, max_hear_distance = 10})
 				minetest.after(0.1 , minetest.swap_node, minetest.deserialize(minetest.serialize(pos)),
 							{ name = "bau_coop:bau_compartilhado_aceso",
@@ -440,7 +440,17 @@ do
 	minetest.register_node("bau_coop:bau_compartilhado_open", def)
 end
 
-
+-- Fecha baus que ficaram abertos ao fechar o mundo
+minetest.register_lbm({
+	name = "bau_coop:fechar_bau",
+	nodenames = {"bau_coop:bau_compartilhado_open"},
+	run_at_every_load = true,
+	action = function(pos, node)
+		minetest.chat_send_all("fechando")
+		minetest.swap_node(pos, { name = "bau_coop:bau_compartilhado",
+				param2 = node.param2 })
+	end,
+})
 
 minetest.register_craft({
 	output = 'bau_coop:bau_compartilhado',
