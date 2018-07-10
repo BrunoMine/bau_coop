@@ -9,6 +9,8 @@
 	Nodes
   ]]
 
+-- Tradutor
+local S = bau_coop.S
 
 -- Variavel de acesso
 local acessos = {}
@@ -23,7 +25,7 @@ local formspec_acesso_negado = "size[7,2]"
 	.. default.gui_bg
 	.. default.gui_bg_img
 	.. "image[0,0;2,2;bau_coop_acesso.png]"
-	.. "label[2,0.75;"..core.colorize("#FF0000", "Acesso Negado").."]"
+	.. "label[2,0.75;"..core.colorize("#FF0000", S("Acesso Negado")).."]"
 
 
 local function pegar_formspec_bau_compartilhado(pos)
@@ -39,7 +41,7 @@ local function pegar_formspec_bau_compartilhado(pos)
 		"listring[nodemeta:" .. spos .. ";main]" ..
 		"listring[current_player;main]" ..
 		default.get_hotbar_bg(0,5.85) ..
-		"label[0,0;Bau Compartilhado]" ..
+		"label[0,0;"..S("Bau Compartilhado").."]" ..
 		"image_button[7,0;1,1;bau_coop_acesso.png;controle_acesso;]"
 	return formspec
 end
@@ -58,15 +60,15 @@ local function pegar_formspec_painel_acesso(name, meta, msg, erro)
 		.. default.gui_bg
 		.. default.gui_bg_img
 		.. "image[0,0;2,2;bau_coop_acesso.png]"
-		.. "label[2,0;Bau Compartilhado]"
-		.. "button[6,0;2,1;voltar;Voltar]"
+		.. "label[2,0;"..S("Bau Compartilhado").."]"
+		.. "button[6,0;2,1;voltar;"..S("Voltar").."]"
 		-- Adicionar acesso
-		.. "field[0.3,2.8;4.8,1;novo_acesso;Adicionar novo jogador;]"
-		.. "button[5,2.49;3,1;adicionar;Adicionar Acesso]"
+		.. "field[0.3,2.8;4.8,1;novo_acesso;"..S("Adicionar novo jogador")..";]"
+		.. "button[5,2.49;3,1;adicionar;"..S("Adicionar Acesso").."]"
 		-- Remover acesso
-		.. "label[0,3.7;Jogadores com acesso]"
+		.. "label[0,3.7;"..S("Jogadores com acesso").."]"
 		.. "dropdown[0,4.125;5,1;nome_acesso;"..lista..";]"
-		.. "button[5,4;3,1;remover;Remover Acesso]"
+		.. "button[5,4;3,1;remover;"..S("Remover Acesso").."]"
 	
 	if msg then
 		if erro then
@@ -166,16 +168,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				return minetest.show_formspec(
 					player:get_player_name(),
 					"bau_coop:bau_compartilhado",
-					pegar_formspec_painel_acesso(player:get_player_name(), meta, "Nenhum nome especificado", true)
+					pegar_formspec_painel_acesso(player:get_player_name(), meta, S("Nenhum nome especificado"), true)
 				)
 			end
 			
 			-- Verificar se ja esta no limite de acessos
-			if table.maxn(donos) >= 10 then
+			if table.maxn(donos) >= bau_coop.lim_acess then
 				return minetest.show_formspec(
 					player:get_player_name(),
 					"bau_coop:bau_compartilhado",
-					pegar_formspec_painel_acesso(player:get_player_name(), meta, "Limite de 10 jogadores", true)
+					pegar_formspec_painel_acesso(player:get_player_name(), meta, S("Limite de @1 jogadores", bau_coop.lim_acess), true)
 				)
 			end
 			
@@ -185,7 +187,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 					return minetest.show_formspec(
 						player:get_player_name(),
 						"bau_coop:bau_compartilhado",
-						pegar_formspec_painel_acesso(player:get_player_name(), meta, "Jogador ja registrado", true)
+						pegar_formspec_painel_acesso(player:get_player_name(), meta, S("Jogador ja registrado"), true)
 					)
 				end
 			end
@@ -200,7 +202,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			return minetest.show_formspec(
 				player:get_player_name(),
 				"bau_coop:bau_compartilhado",
-				pegar_formspec_painel_acesso(player:get_player_name(), meta, fields.novo_acesso.." agora tem acesso")
+				pegar_formspec_painel_acesso(player:get_player_name(), meta, S("@1 agora tem acesso", fields.novo_acesso))
 			)
 			
 		-- Remover acesso de um jogador
@@ -212,7 +214,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				return minetest.show_formspec(
 					player:get_player_name(),
 					"bau_coop:bau_compartilhado",
-					pegar_formspec_painel_acesso(player:get_player_name(), meta, "Nao pode remover a si mesmo", true)
+					pegar_formspec_painel_acesso(player:get_player_name(), meta, S("Nao pode remover a si mesmo"), true)
 				)
 			end
 			
@@ -221,7 +223,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				return minetest.show_formspec(
 					player:get_player_name(),
 					"bau_coop:bau_compartilhado",
-					pegar_formspec_painel_acesso(player:get_player_name(), meta, "Apenas um dono restante", true)
+					pegar_formspec_painel_acesso(player:get_player_name(), meta, S("Apenas um dono restante"), true)
 				)
 			end
 			
@@ -250,7 +252,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			return minetest.show_formspec(
 				player:get_player_name(),
 				"bau_coop:bau_compartilhado",
-				pegar_formspec_painel_acesso(player:get_player_name(), meta, fields.nome_acesso.." perdeu o acesso")
+				pegar_formspec_painel_acesso(player:get_player_name(), meta, S("@1 perdeu o acesso", fields.nome_acesso))
 			)
 			
 		-- Voltar para a formspec normal do bau
@@ -270,7 +272,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 end)
 
 minetest.register_node("bau_coop:bau_compartilhado", {
-	description = "Bau Compartilhado",
+	description = S("Bau Compartilhado"),
 	tiles = {
 		"default_chest_top.png", 
 		"default_chest_top.png", 
@@ -289,7 +291,7 @@ minetest.register_node("bau_coop:bau_compartilhado", {
 		local meta = minetest.get_meta(pos)
 		meta:set_string("dono", placer:get_player_name())
 		meta:set_string("permitidos", minetest.serialize({placer:get_player_name()}))
-		meta:set_string("infotext", "Bau Compartilhado ("..placer:get_player_name()..")")
+		meta:set_string("infotext", S("Bau Compartilhado (@1)", placer:get_player_name()))
 	end,
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)

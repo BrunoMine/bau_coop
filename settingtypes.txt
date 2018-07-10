@@ -1,0 +1,9 @@
+# Configurações aplicaveis para o menu gráfico
+
+#Limite de acessos de jogadores em um mesmo bau compartilhado
+#Limit of players in the same shared chest
+bau_coop_limite_acessos (Limite de acessos) int 10 0
+
+
+
+

@@ -1,0 +1,17 @@
+### Arquivo gerado por bau_coop apartir de pt.po
+# textdomain: bau_coop
+Shared Chest=Bau Compartilhado
+Limit of @1 players=Limite de @1 jogadores
+Add new player=Adicionar novo jogador
+Return=Voltar
+Player already registered=Jogador ja registrado
+@1 now has access=@1 agora tem acesso
+No specified name=Nenhum nome especificado
+@1 lost access=@1 perdeu o acesso
+Add Access=Adicionar Acesso
+Players with access=Jogadores com acesso
+Access Denied=Acesso Negado
+Remove Access=Remover Acesso
+Shared Chest (@1)=Bau Compartilhado (@1)
+You can not remove yourself=Nao pode remover a si mesmo
+Only one remaining owner=Apenas um dono restante

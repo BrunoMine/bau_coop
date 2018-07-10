@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-07-10 12:07-0300\n"
+"PO-Revision-Date: 2018-07-10 12:07-0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: nodes.lua
+msgid "Acesso Negado"
+msgstr "Acesso Negado"
+
+#: nodes.lua
+msgid "Bau Compartilhado"
+msgstr "Bau Compartilhado"
+
+#: nodes.lua
+msgid "Voltar"
+msgstr "Voltar"
+
+#: nodes.lua
+msgid "Adicionar novo jogador"
+msgstr "Adicionar novo jogador"
+
+#: nodes.lua
+msgid "Adicionar Acesso"
+msgstr "Adicionar Acesso"
+
+#: nodes.lua
+msgid "Jogadores com acesso"
+msgstr "Jogadores com acesso"
+
+#: nodes.lua
+msgid "Remover Acesso"
+msgstr "Remover Acesso"
+
+#: nodes.lua
+msgid "Nenhum nome especificado"
+msgstr "Nenhum nome especificado"
+
+#: nodes.lua
+msgid "Limite de @1 jogadores"
+msgstr "Limite de @1 jogadores"
+
+#: nodes.lua
+msgid "Jogador ja registrado"
+msgstr "Jogador ja registrado"
+
+#: nodes.lua
+msgid "@1 agora tem acesso"
+msgstr "@1 agora tem acesso"
+
+#: nodes.lua
+msgid "Nao pode remover a si mesmo"
+msgstr "Nao pode remover a si mesmo"
+
+#: nodes.lua
+msgid "Apenas um dono restante"
+msgstr "Apenas um dono restante"
+
+#: nodes.lua
+msgid "@1 perdeu o acesso"
+msgstr "@1 perdeu o acesso"
+
+#: nodes.lua
+msgid "Bau Compartilhado (@1)"
+msgstr "Bau Compartilhado (@1)"
